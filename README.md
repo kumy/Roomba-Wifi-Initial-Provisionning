@@ -60,3 +60,7 @@ Sending: wifictl { "state" : { "uap" : false } }
 I want to thanks my wife and my familly ;)
 
 Some code in the prototype copied from https://github.com/NickWaterton/Roomba980-Python
+
+# Links
+https://github.com/koalazak/dorita980/issues/106
+https://github.com/NickWaterton/Roomba980-Python/issues/74
