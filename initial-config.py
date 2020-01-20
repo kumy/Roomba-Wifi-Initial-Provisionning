@@ -17,7 +17,7 @@ msgs = [
     #{'topic':"wifictl", 'payload':'{ "state" : { "ntphosts" : "0.irobot.pool.ntp.org 1.irobot.pool.ntp.org 2.irobot.pool.ntp.org 3.irobot.pool.ntp.org" } }'},
     #{'topic':"delta", 'payload':'{ "state" : {"country" : "FR"} }'},
     #{'topic':"delta", 'payload':'{ "state" : { "cloudEnv" : "prod" } }'},
-    {'topic':"wifictl", 'payload':'{"state": {"wlcfg": {"pass": "wifisecretpasssword", "sec": 7, "ssid": "575757"}}}'},  # ssid as octal ("WWW" here)
+    {'topic':"wifictl", 'payload':'{"state": {"wlcfg": {"pass": "wifisecretpasssword", "sec": 7, "ssid": "575757"}}}'},  # ssid as hex ("WWW" here)
     #{'topic':"wifictl", 'payload':'{ "state" : { "utctime" : 1579291795 } }'},
     #{'topic':"wifictl", 'payload':'{ "state" : { "localtimeoffset" : 60 } }'},
     {'topic':"wifictl", 'payload':'{ "state" : { "chkssid" : true } }'},
