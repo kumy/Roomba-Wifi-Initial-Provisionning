@@ -9,7 +9,7 @@ import time
 import paho.mqtt.client as mqtt
 
 # Get Robot CA
-# openssl s_client -showcerts -connect 192.168.10.1 < /dev/null 2>/dev/null|openssl x509 -outform PEM > robot-ca.pem
+# openssl s_client -showcerts -connect 192.168.10.1:8883 < /dev/null 2>/dev/null|openssl x509 -outform PEM > robot-ca.pem
 
 msgs = [
     #{'topic':"delta", 'payload':'{ "state" : { "timezone" : "Europe/Paris" } }'},
