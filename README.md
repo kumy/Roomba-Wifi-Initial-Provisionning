@@ -5,7 +5,7 @@ I finally got there!
 
 # Steps
 ## Push a password
-1. Reset to robot (press Home+Spot+Clean until all lights up)
+1. Reset to robot (press Clean until **all** lights up)
 2. Start Soft AP (press Home+Spot) until sound + green wifi led blink - Eventually try again if the error bip sounds
 1. The password is pushed to the robot using an MQTT Authentication Exchange packet
     `echo -n "f023efcc3b29003a313a313537393139353338363a386678376e597156744b67574a39744f" | xxd -r -p | openssl s_client -CAfile robot-ca.pem  -connect 192.168.10.1 -quiet -noservername`. This output the password back if set correctly.
@@ -43,18 +43,33 @@ Connect using mqtt protocol v3.1.1 and send commands via `json` messages from th
 
 There is a proof of concept in this repo.
 
+- press the 'CLEAN' button until you hear a sound, keep it pressed, it will blink, keep it pressed, all light flash, now release
+- press home + spot until you hear a melody
+- connect you PC to the Access Point. Roomba will speak
+
+- Check the WIFI SSID name, it's your BLID, set it in the script
+- Update your wifi parameters in the script
+- Launch the script
+
+Note: the instruction that set "timezone" *must* emit a bip.
+
 ```
 $ ./initial-config.py
 received data: hex: b'f023', length: 2
 received data: hex: b'efcc3b29003a313a313537393139353338363a386678376e597156744b67574a39744f', length: 35
 received data: hex: b'f023efcc3b29003a313a313537393139353338363a386678376e597156744b67574a39744f', length: 37
-Sending: delta { "state" : { "timezone" : "Europe/Paris" } }
-Sending: wifictl {"state": {"wlcfg": {"pass": "wifisecretpasssword", "sec": 7, "ssid": "575757"}}}
+Sending: delta { "state" : { "timezone" : "Europe/Paris" } }    <<<<======= THIS MUST EMIT A BIP
+Sending: wifictl {"state": {"wlcfg": {"pass": "wifisecretpasssword", "sec": 7, "ssid": "54657374"}}}
 Sending: wifictl { "state" : { "chkssid" : true } }
 Sending: wifictl { "state" : { "wactivate" : true } }
 Sending: wifictl { "state" : { "get" : "netinfo" } }
-Sending: wifictl { "state" : { "uap" : false } }
+Sending: wifictl { "state" : { "uap" : false } }   <<=== after some seconds, the wifi led should stay white
 ```
+
+## Bash script
+
+A bash script has been added with the mqtt commannds. It require mosquitto client (`$ apt-get install mosquitto-clients`). 
+Do not forget to edit the script to set your values.
 
 # Thanks
 I want to thanks my wife and my familly ;)

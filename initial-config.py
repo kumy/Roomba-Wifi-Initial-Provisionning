@@ -9,15 +9,15 @@ import time
 import paho.mqtt.client as mqtt
 
 # Get Robot CA
-# openssl s_client -showcerts -connect 192.168.10.1:8883 < /dev/null 2>/dev/null|openssl x509 -outform PEM > robot-ca.pem
+# openssl s_client -showcerts -verify 5 -connect 192.168.10.1:8883 < /dev/null
 
 msgs = [
-    #{'topic':"delta", 'payload':'{ "state" : { "timezone" : "Europe/Paris" } }'},
+    {'topic':"delta", 'payload':'{ "state" : { "timezone" : "Europe/Paris" } }'},
     #{'topic':"wifictl", 'payload':'{ "state" : { "sdiscUrl" : "https://disc-prod.iot.irobotapi.com/v1/robot/discover?robot_id=0000000000000000&country_code=FR&sku=R966040" } }'},
     #{'topic':"wifictl", 'payload':'{ "state" : { "ntphosts" : "0.irobot.pool.ntp.org 1.irobot.pool.ntp.org 2.irobot.pool.ntp.org 3.irobot.pool.ntp.org" } }'},
     #{'topic':"delta", 'payload':'{ "state" : {"country" : "FR"} }'},
     #{'topic':"delta", 'payload':'{ "state" : { "cloudEnv" : "prod" } }'},
-    {'topic':"wifictl", 'payload':'{"state": {"wlcfg": {"pass": "wifisecretpasssword", "sec": 7, "ssid": "575757"}}}'},  # ssid as hex ("WWW" here)
+    {'topic':"wifictl", 'payload':'{"state": {"wlcfg": {"pass": "wifisecretpasssword", "sec": 7, "ssid": "54657374"}}}'},  # ssid as hex ("Test" here) https://www.rapidtables.com/convert/number/ascii-to-hex.html
     #{'topic':"wifictl", 'payload':'{ "state" : { "utctime" : 1579291795 } }'},
     #{'topic':"wifictl", 'payload':'{ "state" : { "localtimeoffset" : 60 } }'},
     {'topic':"wifictl", 'payload':'{ "state" : { "chkssid" : true } }'},
@@ -29,11 +29,15 @@ msgs = [
 # voodoo packet?
 MAGIC_PACKET=b'\xef\xcc\x3b\x29\x00'
 
+# Your BLID: Check the wifi AP name
+BLID='80A7001234567890'
+
 # format:  :1:timestamp:16 alpha-decimal chars
 PASSWORD=b':1:1579195386:8fx7nYqVtKgWJ9tO'
 
 HOST="192.168.10.1"
 PORT=8883
+
 
 def provision_password():
     payload=MAGIC_PACKET+PASSWORD
@@ -83,14 +87,16 @@ def provision_password():
         sys.exit(1)
     time.sleep(2)
 
+
 def provision_wifi():
-    client = mqtt.Client('0000000000000000')
-    client.tls_set(ca_certs='/path/to/robot-ca.pem', cert_reqs=ssl.CERT_NONE)
+    client = mqtt.Client(BLID)
+    client.tls_set(ca_certs='robot-ca.pem', cert_reqs=ssl.CERT_NONE, tls_version=ssl.PROTOCOL_TLS, ciphers='DEFAULT@SECLEVEL=1')
     client.tls_insecure_set(True)
-    client.username_pw_set('0000000000000000', PASSWORD)
+    client.username_pw_set(BLID, PASSWORD)
     client.tls_insecure_set(True)
     client.connect("192.168.10.1", 8883, 60)
-    
+
+    time.sleep(1)
     for msg in msgs:
         print('Sending:', msg['topic'], msg['payload'], flush=True)
         client.publish(msg['topic'], msg['payload'])
